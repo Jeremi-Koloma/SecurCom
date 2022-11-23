@@ -7,6 +7,7 @@ import com.GrafDigital.SecuCom.SecuCom.Models.AppUser;
 import com.GrafDigital.SecuCom.SecuCom.Repositories.AppRoleRepository;
 import com.GrafDigital.SecuCom.SecuCom.Repositories.AppUserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +17,18 @@ import java.util.List;
 @AllArgsConstructor // Pour l'injections des dépendances de nos Respository;
 public class AccountServiceImpl implements AccountService {
     // Injectons maintenant les dependances Repositories;
-    public final AppUserRepository appUserRepository;
-    public final AppRoleRepository appRoleRepository;
+    private final AppUserRepository appUserRepository;
+    private final AppRoleRepository appRoleRepository;
+
+    // Déclarer le passwordEncoder pour pouvoir l'utiliser
+    private PasswordEncoder passwordEncoder;
 
     // On implemente nos méthodes
     @Override // Ajouter un User
     public AppUser addNewUser(AppUser appUser) {
+        // Encodons le password
+        String pwd = appUser.getPassword(); // recupérer le password
+        appUser.setPassword(passwordEncoder.encode(pwd)); // Encoder le password
         return appUserRepository.save(appUser); // Enregister user pour la persitance des données;
     }
 
