@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity // Identifier comme une Entié JPA
@@ -21,6 +22,6 @@ public class AppUser {
     private String password;
 
     @Column(length = 18)
-    @ManyToMany
-    private Collection<AppRole> appRoles;
+    @ManyToMany(fetch = FetchType.EAGER) // Pour afficher le user avec son Rôle;
+    private Collection<AppRole> appRoles = new ArrayList<>( );
 }

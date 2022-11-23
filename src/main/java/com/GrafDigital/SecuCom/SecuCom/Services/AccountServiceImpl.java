@@ -20,28 +20,35 @@ public class AccountServiceImpl implements AccountService {
     public final AppRoleRepository appRoleRepository;
 
     // On implemente nos méthodes
-    @Override
+    @Override // Ajouter un User
     public AppUser addNewUser(AppUser appUser) {
-        return null;
+        return appUserRepository.save(appUser); // Enregister user pour la persitance des données;
     }
 
-    @Override
+    @Override // Ajouter un Rôle
     public AppRole addNewRole(AppRole appRole) {
-        return null;
+        return appRoleRepository.save(appRole); // Enregister le Role pour la persitance des données;
     }
 
-    @Override
+    @Override // Affecter un Rôle à un User
     public void addRoleToUser(String userName, String roleName) {
+        // récupérer d'abord le User dans la Base de Donnée;
+        AppUser appUser = appUserRepository.findByUserName(userName);
 
+        // récupérons aussi le Rôle dans la Base de Donnée;
+        AppRole appRole = appRoleRepository.findByRoleName(roleName);
+
+        // Maintenant ajoutons le Rôle à user
+        appUser.getAppRoles().add(appRole);
     }
 
-    @Override
+    @Override // charger un User par son Nom
     public AppUser loadUserByUserName(String userName) {
-        return null;
+        return appUserRepository.findByUserName(userName);
     }
 
-    @Override
+    @Override // Retourner la liste des Users
     public List<AppUser> listUsers() {
-        return null;
+        return appUserRepository.findAll();
     }
 }
