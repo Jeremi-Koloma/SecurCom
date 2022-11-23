@@ -2,6 +2,7 @@ package com.GrafDigital.SecuCom.SecuCom.Filters;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 // cette classe va étendre de UsernamePasswordAuthenticationFilter;
@@ -29,7 +32,7 @@ public class JwtAuthentificationFilter extends UsernamePasswordAuthenticationFil
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         // On récupère le UserName et le Password
-        System.out.println("attemptAuthentication");
+        System.out.println("----------- attemptAuthentication ---------------");
         String userName = request.getParameter("userName");
         String password = request.getParameter("password");
         System.out.println(userName);
@@ -44,17 +47,28 @@ public class JwtAuthentificationFilter extends UsernamePasswordAuthenticationFil
     // Deuxième méthode quand l'authentification a réussi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        System.out.println("successfulAuthentication");
+        System.out.println("------------ successfulAuthentication -----------");
         User user = (User) authResult.getPrincipal(); // permet de retourner le user authentifier;
         // Générons le JWT
         Algorithm algo1 = Algorithm.HMAC256("myScret2121"); // Algorithm dencodage
         String jwtAccessToken = JWT.create()
                 .withSubject(user.getUsername()) // userName
-                        .withExpiresAt(new Date(System.currentTimeMillis()+10*1000)) // delais token 5s
+                        .withExpiresAt(new Date(System.currentTimeMillis()+10*1000)) // delais token 10s
                                 .withIssuer(request.getRequestURL().toString()) // le nom de l'app qui a genérer le Token
                 .withClaim("roles",user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())) // convertir la liste des Rôles en string
                         .sign(algo1);
-        // Envoie le JWT au client
-        response.setHeader("Authorization",jwtAccessToken);
+
+        // le Token de renouvellement
+        String jwtRefreshToken = JWT.create()
+                .withSubject(user.getUsername()) // userName
+                .withExpiresAt(new Date(System.currentTimeMillis()+15*1000)) // delais token 15s
+                .withIssuer(request.getRequestURL().toString()) // le nom de l'app qui a genérer le Token
+                .sign(algo1);
+        Map<String, String> idToken = new HashMap<>();
+        idToken.put("access-token", jwtAccessToken);
+        idToken.put("refresh-token", jwtRefreshToken);
+        // Envoie le JWT au client en format JSON
+        response.setContentType("application/json"); // Dire qu'il sagit de format JSON
+        new ObjectMapper().writeValue(response.getOutputStream(), idToken);
     }
 }
