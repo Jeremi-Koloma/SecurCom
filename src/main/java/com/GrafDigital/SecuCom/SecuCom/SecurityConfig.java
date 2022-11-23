@@ -16,12 +16,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // Ici on Idenfitie les Users qui ont le Droit d'accéder;
 
-        //super.configure(auth);
+
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // Ici on spéficie les Droits d'Accès;
+
+        // Désactivé le CSRF
+        http.csrf().disable();
 
         // Autorisé l'Accès à toutes les fonctionnalités;
         http.authorizeRequests().anyRequest().permitAll(); // No Authentifaction any Request;
