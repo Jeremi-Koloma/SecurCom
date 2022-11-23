@@ -1,13 +1,17 @@
 package com.GrafDigital.SecuCom.SecuCom;
 
+import com.GrafDigital.SecuCom.SecuCom.Filters.JwtAuthentificationFilter;
 import com.GrafDigital.SecuCom.SecuCom.Models.AppUser;
 import com.GrafDigital.SecuCom.SecuCom.Services.AccountService;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -54,20 +58,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // Ici on spéficie les Droits d'Accès;
 
-        // Désactivé le CSRF
+        // Désactivé le CSRF vu qu'on va utilisé une session StateLess
         http.csrf().disable();
+
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Autorisé l'Accès aux fonctionnalités;
 
         // Activé un formulaire d'authentification pour chaque User
-        http.formLogin();
+        //http.formLogin();
 
         // Toutes les requêtte doivent être authentifier;
         http.authorizeRequests().anyRequest().authenticated();
 
+        // Intégré le Filtre qu'on vient de créer
+        http.addFilter(new JwtAuthentificationFilter(authenticationManagerBean()));
+
         //http.authorizeRequests().anyRequest().permitAll(); // No Authentifaction any Request;
 
 
+    }
 
+    // Créons cette méthode pour la passer à JwtAuthentificationFilter();
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }
