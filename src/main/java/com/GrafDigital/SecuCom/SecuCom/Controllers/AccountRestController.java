@@ -1,11 +1,12 @@
 package com.GrafDigital.SecuCom.SecuCom.Controllers;
 
+import com.GrafDigital.SecuCom.SecuCom.Models.AppRole;
 import com.GrafDigital.SecuCom.SecuCom.Models.AppUser;
 import com.GrafDigital.SecuCom.SecuCom.Services.AccountService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,4 +22,30 @@ public class AccountRestController {
     public List<AppUser> appUsers(){
         return accountService.listUsers();
     }
+
+    // Une méthode qui permet d'ajouter un User
+    @PostMapping("/AddUser")
+    public AppUser saveUser(@RequestBody AppUser appUser){ // @RequestBody pour prendre les données de qui se trouve dans le Body
+        return accountService.addNewUser(appUser);
+    }
+
+    // Une méthode qui permet d'ajouter un Rôle
+    @PostMapping("/addRole")
+    public AppRole saveRole(@RequestBody AppRole appRole){
+        return accountService.addNewRole(appRole);
+    }
+
+    // Une méthode qui permet d'Affecter un rôle à un User
+    @PostMapping("/addRoleToUser")
+    public void addRoleToUser(@RequestBody RoleUserForm roleUserForm){
+         accountService.addRoleToUser(roleUserForm.getUserName(), roleUserForm.getRoleName());
+    }
+
+}
+
+@Getter
+@Setter
+class RoleUserForm{
+    private String userName;
+    private String roleName;
 }

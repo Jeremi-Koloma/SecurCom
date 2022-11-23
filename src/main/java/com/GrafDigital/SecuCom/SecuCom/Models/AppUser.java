@@ -1,15 +1,15 @@
 package com.GrafDigital.SecuCom.SecuCom.Models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity // Identifier comme une Entié JPA
-@Data // pour gerer les Getters and Setters;
+@Getter // pour gerer les Getters
+@Setter // pour gerer les Setters
 @NoArgsConstructor // un constructeur sans argument
 @AllArgsConstructor // un constructeur avec tous les arguments
 public class AppUser {
@@ -19,6 +19,8 @@ public class AppUser {
 
     @Column(length = 50)
     private String userName;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Ignorer le password en Affichage
     private String password;
 
     @Column(length = 18)
