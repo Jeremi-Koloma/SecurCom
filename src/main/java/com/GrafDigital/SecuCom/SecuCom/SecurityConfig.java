@@ -1,6 +1,7 @@
 package com.GrafDigital.SecuCom.SecuCom;
 
 import com.GrafDigital.SecuCom.SecuCom.Filters.JwtAuthentificationFilter;
+import com.GrafDigital.SecuCom.SecuCom.Filters.JwtAuthorizationFilter;
 import com.GrafDigital.SecuCom.SecuCom.Models.AppUser;
 import com.GrafDigital.SecuCom.SecuCom.Services.AccountService;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,17 +67,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Autorisé l'Accès aux fonctionnalités;
 
-        // Activé un formulaire d'authentification pour chaque User
-        //http.formLogin();
-
         // Toutes les requêtte doivent être authentifier;
         http.authorizeRequests().anyRequest().authenticated();
 
         // Intégré le Filtre qu'on vient de créer
         http.addFilter(new JwtAuthentificationFilter(authenticationManagerBean()));
 
-        //http.authorizeRequests().anyRequest().permitAll(); // No Authentifaction any Request;
+        // Le Filtre qui va intercepté toutes les requêtes
+        http.addFilterBefore(new JwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 
+        //http.authorizeRequests().anyRequest().permitAll(); // No Authentifaction any Request;
 
     }
 
