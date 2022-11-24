@@ -7,6 +7,7 @@ import com.GrafDigital.SecuCom.SecuCom.Services.AccountService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -65,7 +66,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        // Autorisé l'Accès aux fonctionnalités;
+        // Gestions des Droits d'Accès aux fonctionnalités méthode classique;
+        //http.authorizeRequests().antMatchers(HttpMethod.POST,"/SecuCom/AddUser/**").hasAnyAuthority("ADMIN");
+        //http.authorizeRequests().antMatchers(HttpMethod.POST,"/SecuCom/users/**").hasAnyAuthority("USER");
 
         // Toutes les requêtte doivent être authentifier;
         http.authorizeRequests().anyRequest().authenticated();

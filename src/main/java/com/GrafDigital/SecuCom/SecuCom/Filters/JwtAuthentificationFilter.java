@@ -53,7 +53,7 @@ public class JwtAuthentificationFilter extends UsernamePasswordAuthenticationFil
         Algorithm algo1 = Algorithm.HMAC256("myScret2121"); // Algorithm dencodage
         String jwtAccessToken = JWT.create()
                 .withSubject(user.getUsername()) // userName
-                        .withExpiresAt(new Date(System.currentTimeMillis()+10*1000)) // delais token 10s
+                        .withExpiresAt(new Date(System.currentTimeMillis()+1*60*1000)) // delais token 10s
                                 .withIssuer(request.getRequestURL().toString()) // le nom de l'app qui a genérer le Token
                 .withClaim("roles",user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())) // convertir la liste des Rôles en string
                         .sign(algo1);
@@ -61,7 +61,7 @@ public class JwtAuthentificationFilter extends UsernamePasswordAuthenticationFil
         // le Token de renouvellement
         String jwtRefreshToken = JWT.create()
                 .withSubject(user.getUsername()) // userName
-                .withExpiresAt(new Date(System.currentTimeMillis()+15*1000)) // delais token 15s
+                .withExpiresAt(new Date(System.currentTimeMillis()+2*60*1000)) // delais token 15s
                 .withIssuer(request.getRequestURL().toString()) // le nom de l'app qui a genérer le Token
                 .sign(algo1);
         Map<String, String> idToken = new HashMap<>();
