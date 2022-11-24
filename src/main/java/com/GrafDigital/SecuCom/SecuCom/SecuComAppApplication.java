@@ -1,6 +1,7 @@
 package com.GrafDigital.SecuCom.SecuCom;
 
 import com.GrafDigital.SecuCom.SecuCom.Models.AppRole;
+import com.GrafDigital.SecuCom.SecuCom.Models.AppUser;
 import com.GrafDigital.SecuCom.SecuCom.Services.AccountService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -10,8 +11,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
+
 @SpringBootApplication
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true) // Annotation pour la gestion des Droits Accès 
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true) // Annotation pour la gestion des Droits Accès
 public class SecuComAppApplication {
 
 	public static void main(String[] args) {
@@ -30,6 +33,11 @@ public class SecuComAppApplication {
 			// Ajoutons des Rôles
 			accountService.addNewRole(new AppRole(null, "USER"));
 			accountService.addNewRole(new AppRole(null, "ADMIN"));
+
+			accountService.addNewUser(new AppUser(null, "Jeremi Koloma", "123", new ArrayList<>()));
+
+			accountService.addRoleToUser("Jeremi Koloma", "USER");
+			accountService.addRoleToUser("Jeremi Koloma", "ADMIN");
 		};
 	}
 

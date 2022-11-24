@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static java.util.Arrays.stream;
+
 // Cette classe va étendre de la classe OncePerRequestFilter;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     // on implement la méthode
@@ -26,17 +28,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String authorizationToken = request.getHeader("Authorization");
 
         // vérifions si le Header n'est pas null
-        if (authorizationToken != null && authorizationToken.startsWith("Bearer ")){
+        if (authorizationToken!= null && authorizationToken.startsWith("Bearer ")){
             try {
                 String jwt = authorizationToken.substring(7); // Pour ignorer le Bearer nombre de caractère
-                Algorithm algorithm = Algorithm.HMAC256("myScret2121"); // le même secret pour la signature
+                Algorithm algorithm = Algorithm.HMAC256("myScret2121".getBytes()); // le même secret pour la signature
                 JWTVerifier jwtVerifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = jwtVerifier.verify(jwt); // Vérifier l'algorithm qui  créer le Token
                 String userName = decodedJWT.getSubject(); // Pour recupérer le userName
                 String[] roles = decodedJWT.getClaim("roles ").asArray(String.class); // Pour recupérer les roles
                 Collection<GrantedAuthority> authorities = new ArrayList<>();
                 for (String r:roles){
-                    authorities.add( new SimpleGrantedAuthority(r));
+                    authorities.add(new SimpleGrantedAuthority(r));
                 }
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(userName,null, authorities);
@@ -49,8 +51,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                  response.setHeader("error-message",e.getMessage());
                  response.sendError(HttpServletResponse.SC_FORBIDDEN);
             }
-        } else {
-            filterChain.doFilter(request, response );
+        }
+        else {
+            filterChain.doFilter(request, response);
         }
     }
 }

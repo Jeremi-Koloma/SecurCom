@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 // cette classe va étendre de UsernamePasswordAuthenticationFilter;
 @AllArgsConstructor // pour injection authenticationManager
 public class JwtAuthentificationFilter extends UsernamePasswordAuthenticationFilter {
@@ -50,10 +52,10 @@ public class JwtAuthentificationFilter extends UsernamePasswordAuthenticationFil
         System.out.println("------------ successfulAuthentication -----------");
         User user = (User) authResult.getPrincipal(); // permet de retourner le user authentifier;
         // Générons le JWT
-        Algorithm algo1 = Algorithm.HMAC256("myScret2121"); // Algorithm dencodage
+        Algorithm algo1 = Algorithm.HMAC256("myScret2121".getBytes()); // Algorithm dencodage
         String jwtAccessToken = JWT.create()
                 .withSubject(user.getUsername()) // userName
-                        .withExpiresAt(new Date(System.currentTimeMillis()+1*60*1000)) // delais token 10s
+                        .withExpiresAt(new Date(System.currentTimeMillis()+5*60*1000)) // delais token 10s
                                 .withIssuer(request.getRequestURL().toString()) // le nom de l'app qui a genérer le Token
                 .withClaim("roles",user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())) // convertir la liste des Rôles en string
                         .sign(algo1);
@@ -61,14 +63,18 @@ public class JwtAuthentificationFilter extends UsernamePasswordAuthenticationFil
         // le Token de renouvellement
         String jwtRefreshToken = JWT.create()
                 .withSubject(user.getUsername()) // userName
-                .withExpiresAt(new Date(System.currentTimeMillis()+2*60*1000)) // delais token 15s
+                .withExpiresAt(new Date(System.currentTimeMillis()+10*60*1000)) // delais token 15s
                 .withIssuer(request.getRequestURL().toString()) // le nom de l'app qui a genérer le Token
                 .sign(algo1);
+
+        //response.setHeader("access_token",jwtAccessToken);
+        //response.setHeader("refresh_token",jwtRefreshToken);
+
         Map<String, String> idToken = new HashMap<>();
-        idToken.put("access-token", jwtAccessToken);
-        idToken.put("refresh-token", jwtRefreshToken);
+        idToken.put("access_token", jwtAccessToken);
+        idToken.put("refresh_token", jwtRefreshToken);
         // Envoie le JWT au client en format JSON
-        response.setContentType("application/json"); // Dire qu'il sagit de format JSON
+        response.setContentType(APPLICATION_JSON_VALUE); // Dire qu'il sagit de format JSON
         new ObjectMapper().writeValue(response.getOutputStream(), idToken);
     }
 }
