@@ -69,9 +69,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        // Gesion des Doits
         http.authorizeRequests().antMatchers("/SecuCom/login/**").permitAll();
         http.authorizeRequests().antMatchers(GET, "/SecuCom/users/**").hasAnyAuthority("USER");
         http.authorizeRequests().antMatchers(POST, "/SecuCom/AddUser/**").hasAnyAuthority("ADMIN");
+        http.authorizeRequests().antMatchers(POST, "/SecuCom/addRole/**").hasAnyAuthority("ADMIN");
+        http.authorizeRequests().antMatchers(POST, "/SecuCom/addRoleToUser/**").hasAnyAuthority("ADMIN");
 
         // Toutes les requêtte doivent être authentifier;
         http.authorizeRequests().anyRequest().authenticated();
