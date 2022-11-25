@@ -24,10 +24,11 @@ import java.util.Map;
 
 @RestController // Identifier la classe comme Controllers
 @AllArgsConstructor // Pour l'injections des dependances, AccountService;
+@RequestMapping("/SecuCom")
 public class AccountRestController {
     // Injectons la dependance
     public final AccountService accountService;
-    private final OAuth2AuthorizedClientService authorizedClientService;
+
 
     // Une méthode qui permet de retourner une liste des Users
     @GetMapping("/users")
@@ -60,7 +61,7 @@ public class AccountRestController {
 
 
 
-    @RequestMapping("/*")
+    /*@RequestMapping("/*")
     public String getUserInfo(Principal user) {
         StringBuffer userInfo= new StringBuffer();
         if(user instanceof UsernamePasswordAuthenticationToken){
@@ -70,10 +71,10 @@ public class AccountRestController {
             userInfo.append(getOauth2LoginInfo(user));
         }
         return userInfo.toString();
-    }
+    }*/
 
-    @RequestMapping("/**")
-    private StringBuffer getUsernamePasswordLoginInfo(Principal user)
+
+   /* private StringBuffer getUsernamePasswordLoginInfo(Principal user)
     {
         StringBuffer usernameInfo = new StringBuffer();
 
@@ -86,35 +87,8 @@ public class AccountRestController {
             usernameInfo.append("NA");
         }
         return usernameInfo;
-    }
-    private StringBuffer getOauth2LoginInfo(Principal user){
+    }*/
 
-        StringBuffer protectedInfo = new StringBuffer();
-
-        OAuth2AuthenticationToken authToken = ((OAuth2AuthenticationToken) user);
-        OAuth2AuthorizedClient authClient = this.authorizedClientService.loadAuthorizedClient(authToken.getAuthorizedClientRegistrationId(), authToken.getName());
-        if(authToken.isAuthenticated()){
-
-            Map<String,Object> userAttributes = ((DefaultOAuth2User) authToken.getPrincipal()).getAttributes();
-
-            String userToken = authClient.getAccessToken().getTokenValue();
-            protectedInfo.append("Welcome, " + userAttributes.get("name")+"<br><br>");
-            protectedInfo.append("e-mail: " + userAttributes.get("email")+"<br><br>");
-            protectedInfo.append("Access Token: " + userToken+"<br><br>");
-
-        }
-        else{
-            protectedInfo.append("NA");
-        }
-        return protectedInfo;
-    }
-    private OidcIdToken getIdToken(OAuth2User principal){
-        if(principal instanceof DefaultOidcUser) {
-            DefaultOidcUser oidcUser = (DefaultOidcUser)principal;
-            return oidcUser.getIdToken();
-        }
-        return null;
-    }
 
 
 

@@ -81,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().anyRequest().authenticated();
 
         // Intégré le Filtre qu'on vient de créer
-        http.addFilter(jwtAuthentificationFilter);  
+        http.addFilter(jwtAuthentificationFilter);
 
         // Le Filtre qui va intercepté toutes les requêtes
         http.addFilterBefore(new JwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
