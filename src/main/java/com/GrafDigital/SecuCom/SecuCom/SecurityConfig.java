@@ -7,7 +7,6 @@ import com.GrafDigital.SecuCom.SecuCom.Services.AccountService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -78,13 +77,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().anyRequest().authenticated();
 
         // Intégré le Filtre qu'on vient de créer
-        http.addFilter(jwtAuthentificationFilter);
+        http.addFilter(jwtAuthentificationFilter);  
 
         // Le Filtre qui va intercepté toutes les requêtes
         http.addFilterBefore(new JwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        //http.authorizeRequests().anyRequest().permitAll(); // No Authentifaction any Request;
-
     }
 
     // Créons cette méthode pour la passer à JwtAuthentificationFilter();

@@ -55,24 +55,13 @@ public class JwtAuthentificationFilter extends UsernamePasswordAuthenticationFil
         Algorithm algo1 = Algorithm.HMAC256("myScret2121".getBytes()); // Algorithm dencodage
         String jwtAccessToken = JWT.create()
                 .withSubject(user.getUsername()) // userName
-                        .withExpiresAt(new Date(System.currentTimeMillis()+5*60*1000)) // delais token 10s
+                        .withExpiresAt(new Date(System.currentTimeMillis()+1*60*1000)) // delais token 10s
                                 .withIssuer(request.getRequestURL().toString()) // le nom de l'app qui a genérer le Token
                 .withClaim("roles",user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())) // convertir la liste des Rôles en string
                         .sign(algo1);
 
-        // le Token de renouvellement
-        String jwtRefreshToken = JWT.create()
-                .withSubject(user.getUsername()) // userName
-                .withExpiresAt(new Date(System.currentTimeMillis()+10*60*1000)) // delais token 15s
-                .withIssuer(request.getRequestURL().toString()) // le nom de l'app qui a genérer le Token
-                .sign(algo1);
-
-        //response.setHeader("access_token",jwtAccessToken);
-        //response.setHeader("refresh_token",jwtRefreshToken);
-
         Map<String, String> idToken = new HashMap<>();
         idToken.put("access_token", jwtAccessToken);
-        idToken.put("refresh_token", jwtRefreshToken);
         // Envoie le JWT au client en format JSON
         response.setContentType(APPLICATION_JSON_VALUE); // Dire qu'il sagit de format JSON
         new ObjectMapper().writeValue(response.getOutputStream(), idToken);
