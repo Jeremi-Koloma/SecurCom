@@ -27,20 +27,19 @@ import java.util.Collection;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
-// Cette classe va étendre de la classe WebSecurityConfigurerAdapter;
-@Configuration // une classe de configuration
-@EnableWebSecurity
+// Cette classe va étendre de la classe WebSecurityConfigurerAdapter pour gérer notre chain de filtre;
+@Configuration // Dit à Spring qu'il sagit d'une classe de configuration
+@EnableWebSecurity // permet à Spring Security de savoir ou se trouve la configuration web
 @AllArgsConstructor // Pour l'injections de service pour prendre la méthode qui va chargé le user
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // injectons notre service
     private AccountService accountService;
 
-    @Override
+    @Override // cette méthode permet d'utiliser des identifiant venant de la base de donnée
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Ici on Idenfitie les Users qui ont le Droit d'accéder;
 
-        // Repérer le User avec ses droits grâce à la méthode loadUserByUserName;
+        // Repérer le User avec ses droits grâce à la méthode loadUserByUserName du Service;
         auth.userDetailsService(new UserDetailsService() { // on le donne un Objet qui implement de l'interface UserDetailsService
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -59,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Override
+    @Override // la méthode configure va prendre en entré les requêtes HTTP avec (HttpSecurity en param qui correspond aux requette)
     protected void configure(HttpSecurity http) throws Exception {
         JwtAuthentificationFilter jwtAuthentificationFilter = new JwtAuthentificationFilter(authenticationManagerBean());
         jwtAuthentificationFilter.setFilterProcessesUrl("/SecuCom/login");
@@ -67,14 +66,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Désactivé le CSRF vu qu'on va utilisé une session StateLess
         http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        //http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        // Gesion des Doits
+        // Gesion des Doits // Nos chains de filtres pour vérouller l'accès
         http.authorizeRequests().antMatchers("/SecuCom/login/**").permitAll();
         http.authorizeRequests().antMatchers(GET, "/SecuCom/users/**").hasAnyAuthority("USER");
         http.authorizeRequests().antMatchers(POST, "/SecuCom/AddUser/**").hasAnyAuthority("ADMIN");
         http.authorizeRequests().antMatchers(POST, "/SecuCom/addRole/**").hasAnyAuthority("ADMIN");
         http.authorizeRequests().antMatchers(POST, "/SecuCom/addRoleToUser/**").hasAnyAuthority("ADMIN");
+        http.formLogin();
+        http.oauth2Login();
 
         // Toutes les requêtte doivent être authentifier;
         http.authorizeRequests().anyRequest().authenticated();
