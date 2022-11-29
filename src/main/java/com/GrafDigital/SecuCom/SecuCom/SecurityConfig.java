@@ -66,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Désactivé le CSRF vu qu'on va utilisé une session StateLess
         http.csrf().disable();
-        //http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Gesion des Doits // Nos chains de filtres pour vérouller l'accès
         http.authorizeRequests().antMatchers("/SecuCom/login/**").permitAll();

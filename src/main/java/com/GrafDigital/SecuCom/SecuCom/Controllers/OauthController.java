@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,8 +13,8 @@ import java.security.Principal;
 import java.util.Map;
 
 @RestController
+@AllArgsConstructor
 public class OauthController {
-    @Autowired
     private OAuth2AuthorizedClientService authorizedClientService;
 
     @RequestMapping("/**")
@@ -44,11 +41,4 @@ public class OauthController {
         return protectedInfo;
     }
 
-    /*private OidcIdToken getIdToken(OAuth2User principal){
-        if(principal instanceof DefaultOidcUser) {
-            DefaultOidcUser oidcUser = (DefaultOidcUser)principal;
-            return oidcUser.getIdToken();
-        }
-        return null;
-    }*/
 }

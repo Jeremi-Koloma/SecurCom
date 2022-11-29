@@ -50,7 +50,9 @@ public class JwtAuthentificationFilter extends UsernamePasswordAuthenticationFil
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         System.out.println("------------ successfulAuthentication -----------");
+
         User user = (User) authResult.getPrincipal(); // permet de retourner le user authentifier;
+        System.out.println("Bonjour " +user.getUsername());
         // Générons le JWT
         Algorithm algo1 = Algorithm.HMAC256("myScret2121".getBytes()); // Algorithm dencodage
         String jwtAccessToken = JWT.create()
@@ -62,6 +64,7 @@ public class JwtAuthentificationFilter extends UsernamePasswordAuthenticationFil
 
         Map<String, String> idToken = new HashMap<>();
         idToken.put("access_token", jwtAccessToken);
+        idToken.put("Profile ",user.getAuthorities().toString());
         // Envoie le JWT au client en format JSON
         response.setContentType(APPLICATION_JSON_VALUE); // Dire qu'il sagit de format JSON
         new ObjectMapper().writeValue(response.getOutputStream(), idToken);
