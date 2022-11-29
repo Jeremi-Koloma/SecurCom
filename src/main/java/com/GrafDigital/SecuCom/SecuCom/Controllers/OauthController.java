@@ -43,6 +43,7 @@ public class OauthController {
         }
         return protectedInfo;
     }
+
     /*private OidcIdToken getIdToken(OAuth2User principal){
         if(principal instanceof DefaultOidcUser) {
             DefaultOidcUser oidcUser = (DefaultOidcUser)principal;
