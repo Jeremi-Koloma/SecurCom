@@ -25,7 +25,7 @@ public class SecuComAppApplication {
 	}
 
 	// Au démmarage de l'application
-	@Bean // Annotation Bean pour que ça exécute, // Donnons notre methode en paramettre
+	@Bean // Annotation Bean pour que ça exécute, // Donnons notre interface serive en paramettre
 	CommandLineRunner start(AccountService accountService){
 		return  args -> {
 			// Ajoutons des Rôles

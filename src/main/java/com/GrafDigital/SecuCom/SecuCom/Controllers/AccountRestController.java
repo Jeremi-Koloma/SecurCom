@@ -17,7 +17,6 @@ public class AccountRestController {
     // Injectons la dependance
     public final AccountService accountService;
 
-
     // Une méthode qui permet de retourner une liste des Users
     @GetMapping("/users")
     public List<AppUser> appUsers(){
@@ -38,12 +37,9 @@ public class AccountRestController {
 
     // Une méthode qui permet d'Affecter un rôle à un User
     @PostMapping("/addRoleToUser")
-    //@PostAuthorize("hasAuthority('ADMIN')")
     public void addRoleToUser(@RequestBody RoleUserForm roleUserForm){
          accountService.addRoleToUser(roleUserForm.getUserName(), roleUserForm.getRoleName());
     }
-
-
 
 
 }
