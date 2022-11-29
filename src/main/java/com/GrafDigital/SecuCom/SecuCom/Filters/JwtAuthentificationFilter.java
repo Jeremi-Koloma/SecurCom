@@ -57,13 +57,14 @@ public class JwtAuthentificationFilter extends UsernamePasswordAuthenticationFil
         Algorithm algo1 = Algorithm.HMAC256("myScret2121".getBytes()); // Algorithm dencodage
         String jwtAccessToken = JWT.create()
                 .withSubject(user.getUsername()) // userName
-                        .withExpiresAt(new Date(System.currentTimeMillis()+1*60*1000)) // delais token 10s
+                        .withExpiresAt(new Date(System.currentTimeMillis()+2*60*1000)) // delais token 10s
                                 .withIssuer(request.getRequestURL().toString()) // le nom de l'app qui a genérer le Token
                 .withClaim("roles",user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())) // convertir la liste des Rôles en string
                         .sign(algo1);
 
         Map<String, String> idToken = new HashMap<>();
         idToken.put("access_token", jwtAccessToken);
+        idToken.put("Bonjour ",user.getUsername());
         idToken.put("Profile ",user.getAuthorities().toString());
         // Envoie le JWT au client en format JSON
         response.setContentType(APPLICATION_JSON_VALUE); // Dire qu'il sagit de format JSON

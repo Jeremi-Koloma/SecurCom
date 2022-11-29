@@ -58,4 +58,17 @@ public class AccountServiceImpl implements AccountService {
     public List<AppUser> listUsers() {
         return appUserRepository.findAll();
     }
+
+    @Override // Supprimer un User
+    public String supprimer(Long idAppUser) {
+        AppUser userasupprimer = appUserRepository.findById(idAppUser).orElse(null);
+        if (userasupprimer != null) { // Vérifié si le User Existe
+            appUserRepository.deleteById(idAppUser);
+            return "Collaborateur Supprimer !";
+        }
+        else {  // Sinon S'il n'Existe
+            return "Ce collaborateur n'existe pas !";
+        }
+
+    }
 }

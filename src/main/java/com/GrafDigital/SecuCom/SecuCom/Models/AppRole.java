@@ -2,10 +2,7 @@ package com.GrafDigital.SecuCom.SecuCom.Models;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity // Définis la classe comme une entité JPA;
 @Getter // Générer les Getters
@@ -16,5 +13,7 @@ public class AppRole {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String roleName;
 }

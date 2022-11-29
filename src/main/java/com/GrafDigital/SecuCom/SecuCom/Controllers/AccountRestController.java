@@ -41,6 +41,12 @@ public class AccountRestController {
          accountService.addRoleToUser(roleUserForm.getUserName(), roleUserForm.getRoleName());
     }
 
+    // Méthode Delete
+    @DeleteMapping("/delete/{IdAppUser}")
+    public String delete(@PathVariable Long IdAppUser){
+        return accountService.supprimer(IdAppUser);
+    }
+
 
 }
 

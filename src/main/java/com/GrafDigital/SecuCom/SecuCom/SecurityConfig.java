@@ -74,6 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(POST, "/SecuCom/AddUser/**").hasAnyAuthority("ADMIN");
         http.authorizeRequests().antMatchers(POST, "/SecuCom/addRole/**").hasAnyAuthority("ADMIN");
         http.authorizeRequests().antMatchers(POST, "/SecuCom/addRoleToUser/**").hasAnyAuthority("ADMIN");
+        http.authorizeRequests().antMatchers(POST, "/SecuCom/delete/{IdAppUser}/**").hasAnyAuthority("ADMIN");
         http.formLogin();
         http.oauth2Login();
 

@@ -20,4 +20,7 @@ public interface AccountService {
 
     // une méthode qui permet d'afficher la liste des Users
     List<AppUser> listUsers();
+
+    // Une méthode va retourné String qui va prendre en param (IdAppUser) à supprimer;
+    String supprimer(Long idAppUser);
 }
